@@ -11,13 +11,16 @@ class DataProcessor():
 
     def query_db(self, mode):
         if mode == 'train':
-            with open('train.sql', 'r') as f:
+            with open('queries/train.sql', 'r') as f:
                 query_str = f.read()
         elif mode == 'test':
-            with open('test.sql', 'r') as f:
+            with open('queries/test.sql', 'r') as f:
+                query_str = f.read()
+        elif mode == 'inference':
+            with open('queries/inference.sql', 'r') as f:
                 query_str = f.read()
         else:
-            with open('validation.sql', 'r') as f:
+            with open('queries/validation.sql', 'r') as f:
                 query_str = f.read()
 
         query_job = self.client.query(query_str)

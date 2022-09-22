@@ -4,6 +4,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import HistGradientBoostingRegressor, GradientBoostingRegressor
 import joblib
+import time
 
 
 class ReturnCluster(BaseEstimator, TransformerMixin):
@@ -28,6 +29,7 @@ class ModelPipeline():
         self.include_hour = include_hour
 
     def fit(self):
+        start = time.time()
         df = self.df
 
         cluster_pipeline = Pipeline([
@@ -41,16 +43,18 @@ class ModelPipeline():
 
         self.clusters = clusters
 
-        X, y  = self.prepare_data()
+        X, y  = self.prepare_data(scoring=True)
 
         reg = HistGradientBoostingRegressor()
         reg.fit(X, y)
 
         joblib.dump(reg, 'pickled_objects/regressor.pkl')
     
-        print('Training R2: {}'.format(reg.score(X, y)))
+        print('Training R2: {:.2f}'.format(reg.score(X, y)))
+        print('Time taken: {:.2f}s'.format(time.time()-start))
 
-    def inference(self):
+    def inference(self, scoring=True):
+        start = time.time()
         df = self.df
 
         cluster_pipeline = joblib.load('pickled_objects/cluster_pipeline.pkl')
@@ -59,15 +63,18 @@ class ModelPipeline():
 
         self.clusters = clusters
 
-        X, y = self.prepare_data()
+        X, y = self.prepare_data(scoring)
 
         reg = joblib.load('pickled_objects/regressor.pkl')
         
-        print('Inference R2: {}'.format(reg.score(X, y)))
+        if scoring:
+            print('Inference R2: {:.2f}'.format(reg.score(X, y)))
+        print('Time taken: {:.2f}s'.format(time.time()-start))
+
+        return reg.predict(X)
 
 
-
-    def prepare_data(self):
+    def prepare_data(self, scoring):
         df = self.df
         df.loc[:, 'Cluster'] = self.clusters
 
@@ -83,6 +90,9 @@ class ModelPipeline():
             X = df_agg[['Cluster', 'month', 'year', 'day']]
             y = df_agg[['Incident_Number']].values.reshape((-1,))
 
-        return X, y
+        if scoring:
+            return X, y
+        else:
+            return X, None
 
 
