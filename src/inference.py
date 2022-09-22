@@ -13,9 +13,8 @@ def main():
     df_infer = dproc.query_db('inference')
 
     print('Inference started')
-    training_pipeline = ModelPipeline(df_infer, include_hour=INCLUDE_HOUR)
-    infer = training_pipeline.inference(scoring=False)
-    print(len(infer))
+    inference_pipeline = ModelPipeline(df_infer, include_hour=INCLUDE_HOUR)
+    infer = inference_pipeline.inference(scoring=False)
     print('Inference completed\n')
 
 
