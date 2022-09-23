@@ -8,8 +8,8 @@ import random
 class TestDataProcessor:
     def test_db_query(self):
         dproc = DataProcessor(
-            credentials_path='niologic-assessment-33f145533e28.json',
-            project_id='niologic-assessment'
+            credentials_path='',
+            project_id=''
         )
         df = dproc.query_db(Mode.TEST)
         assert df.shape[0] == 106748, 'Incorrect number of rows in dataframe'
