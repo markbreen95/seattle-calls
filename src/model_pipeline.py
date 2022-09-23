@@ -5,6 +5,9 @@ import joblib
 import time
 from return_cluster import ReturnCluster
 
+CLUSTER_PIPELINE_PKL_PATH = 'pickled_objects/cluster_pipeline_{}.pkl'
+REG_PIPELINE_PKL_PATH = 'pickled_objects/regressor_{}.pkl'
+
 
 class ModelPipeline():
     """
@@ -57,7 +60,7 @@ class ModelPipeline():
 
         clusters = cluster_pipeline.fit_transform(df[['Longitude', 'Latitude']])
 
-        joblib.dump(cluster_pipeline, 'pickled_objects/cluster_pipeline.pkl')
+        joblib.dump(cluster_pipeline, CLUSTER_PIPELINE_PKL_PATH.format(self.include_hour))
 
         self.clusters = clusters
 
@@ -66,7 +69,7 @@ class ModelPipeline():
         reg = HistGradientBoostingRegressor()
         reg.fit(X, y)
 
-        joblib.dump(reg, 'pickled_objects/regressor.pkl')
+        joblib.dump(reg, REG_PIPELINE_PKL_PATH.format(self.include_hour))
     
         print('Training R2: {:.2f}'.format(reg.score(X, y)))
         print('Time taken: {:.2f}s'.format(time.time()-start))
@@ -88,7 +91,7 @@ class ModelPipeline():
         start = time.time()
         df = self.df
 
-        cluster_pipeline = joblib.load('pickled_objects/cluster_pipeline.pkl')
+        cluster_pipeline = joblib.load(CLUSTER_PIPELINE_PKL_PATH.format(self.include_hour))
 
         clusters = cluster_pipeline.transform(df[['Longitude', 'Latitude']])
 
@@ -96,7 +99,7 @@ class ModelPipeline():
 
         X, y = self.prepare_data(scoring)
 
-        reg = joblib.load('pickled_objects/regressor.pkl')
+        reg = joblib.load(REG_PIPELINE_PKL_PATH.format(self.include_hour))
         
         if scoring:
             print('Inference R2: {:.2f}'.format(reg.score(X, y)))
@@ -127,6 +130,16 @@ class ModelPipeline():
         df.drop(['Longitude'], axis=1, inplace=True)
         df.rename({'Latitude': 'Incident_Number'}, axis=1, inplace=True)
 
+        cols_with_hour = ['Cluster', 'year', 'month', 'day', 'hour']
+        cols_without_hour = ['Cluster', 'year', 'month', 'day']
+
+        cols = cols_with_hour if self.include_hour else cols_without_hour
+
+        df_agg = df.groupby(cols).count().reset_index()
+        X = df_agg[cols]
+        y = df_agg[['Incident_Number']].values.reshape((-1,))
+
+        """
         if self.include_hour:
             df_agg = df.groupby(['Cluster', 'year', 'month', 'day', 'hour']).count().reset_index()
             X = df_agg[['Cluster', 'month', 'year', 'day', 'hour']]
@@ -135,6 +148,7 @@ class ModelPipeline():
             df_agg = df.groupby(['Cluster', 'year', 'month', 'day']).count().reset_index()
             X = df_agg[['Cluster', 'month', 'year', 'day']]
             y = df_agg[['Incident_Number']].values.reshape((-1,))
+        """
 
         if scoring:
             return X, y
