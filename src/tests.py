@@ -1,5 +1,5 @@
-from data_loader import DataProcessor
-from functions import ReturnCluster, ModelPipeline
+from data_processor import DataProcessor
+from return_cluster import ReturnCluster, ModelPipeline
 import pandas as pd
 import numpy as np
 import random

@@ -1,5 +1,12 @@
 from google.cloud import bigquery
 from google.oauth2 import service_account
+from enum import Enum
+
+class Mode(Enum):
+    TRAIN = 'queries/train.sql'
+    TEST = 'queries/test.sql'
+    VALIDATION = 'queries/validation.sql'
+    INFERENCE = 'queries/inference.sql'
 
 class DataProcessor():
     """
@@ -33,7 +40,7 @@ class DataProcessor():
         self.project_id = project_id
         self.client = bigquery.Client(credentials=self.credentials, project=self.project_id)
 
-    def query_db(self, mode):
+    def query_db(self, mode: Mode):
         """
         Performs inference on a dataframe.
 
@@ -47,18 +54,9 @@ class DataProcessor():
         pd.DataFrame
             Dataframe containing query results
         """
-        if mode == 'train':
-            with open('queries/train.sql', 'r') as f:
-                query_str = f.read()
-        elif mode == 'test':
-            with open('queries/test.sql', 'r') as f:
-                query_str = f.read()
-        elif mode == 'inference':
-            with open('queries/inference.sql', 'r') as f:
-                query_str = f.read()
-        else:
-            with open('queries/validation.sql', 'r') as f:
-                query_str = f.read()
+        file_path = mode.value
+        with open(file_path, 'r') as f:
+            query_str = f.read()
 
         query_job = self.client.query(query_str)
         return query_job.to_dataframe()

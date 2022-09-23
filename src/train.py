@@ -1,5 +1,5 @@
-from functions import ModelPipeline
-from data_loader import DataProcessor
+from model_pipeline import ModelPipeline
+from data_processor import DataProcessor, Mode
 import pandas as pd
 
 INCLUDE_HOUR = False
@@ -11,9 +11,9 @@ def main():
         project_id='niologic-assessment'
     )
 
-    df_train = dproc.query_db('train')
-    df_test = dproc.query_db('test')
-    df_val = dproc.query_db('validation')
+    df_train = dproc.query_db(Mode.TRAIN)
+    df_test = dproc.query_db(Mode.TEST)
+    df_val = dproc.query_db(Mode.VALIDATION)
 
     print('Training started')
     training_pipeline = ModelPipeline(df_train, include_hour=INCLUDE_HOUR)

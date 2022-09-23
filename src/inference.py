@@ -1,5 +1,5 @@
-from functions import ModelPipeline
-from data_loader import DataProcessor
+from return_cluster import ModelPipeline
+from data_processor import DataProcessor, Mode
 import pandas as pd
 import time
 
@@ -22,7 +22,7 @@ def main():
     #     credentials_path='niologic-assessment-33f145533e28.json',
     #     project_id='niologic-assessment'
     # )
-    # df_infer = dproc.query_db('inference')
+    # df_infer = dproc.query_db(Mode.INFERENCE)
     
     # Option 2:
     # df_infer = pd.DataFrame(
