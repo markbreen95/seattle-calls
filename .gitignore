@@ -1,4 +1,4 @@
 src/__pycache__/
 *.json
-notebooks/.ipynb_checkpoints/
-
+notebooks/.ipynb_checkpoints/*
+data/output/*

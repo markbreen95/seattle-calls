@@ -82,7 +82,18 @@ class ModelPipeline():
         Whether or not to include the hour column in model fitting
 
     """
+
     def __init__(self, df, include_hour=True):
+        """
+        Constructs all the necessary attributes for the model pipeline object.
+
+        Parameters
+        ----------
+            df : pd.DataFrame
+                The dataframe that will be used in the model pipeline
+            include_hour : bool, optional
+                Whether or not to include the hour column in model fitting
+        """
         self.df = df
         self.include_hour = include_hour
 
@@ -157,6 +168,21 @@ class ModelPipeline():
 
 
     def prepare_data(self, scoring):
+        """
+        Prepares data before pipeline fitting or inference.
+
+        Parameters
+        ----------
+        scoring : bool
+            Whether or not to return scoring metrics (false for new data)
+
+        Returns
+        -------
+        X : np.array
+            The transformed feature matrix
+        y : np.array
+            The target vector
+        """
         df = self.df
         df.loc[:, 'Cluster'] = self.clusters
 

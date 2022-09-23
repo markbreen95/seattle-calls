@@ -5,6 +5,7 @@ import pandas as pd
 INCLUDE_HOUR = False
 
 def main():
+    """Performs model training and evaluation of test and validation set"""
     dproc = DataProcessor(
         credentials_path='niologic-assessment-33f145533e28.json',
         project_id='niologic-assessment'
