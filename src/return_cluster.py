@@ -3,6 +3,7 @@ from sklearn.cluster import KMeans
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import HistGradientBoostingRegressor, GradientBoostingRegressor
+import numpy as np
 
 
 class ReturnCluster(BaseEstimator, TransformerMixin):
@@ -29,7 +30,7 @@ class ReturnCluster(BaseEstimator, TransformerMixin):
         """
         self.n_clusters = n_clusters
            
-    def fit(self, X):
+    def fit(self, X: np.array) -> np.array:
         """
         Fits the KMeans clustering algorithm to supplied array.
 
@@ -47,7 +48,7 @@ class ReturnCluster(BaseEstimator, TransformerMixin):
         self.model.fit(self.X)
         return self
        
-    def transform(self, X):
+    def transform(self, X: np.array) -> np.array:
         """
         Transforms a numpy array of coordinates to return k means clusters.
 

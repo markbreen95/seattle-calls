@@ -4,6 +4,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor, GradientBoostingRegr
 import joblib
 import time
 from return_cluster import ReturnCluster
+import numpy as np
 
 CLUSTER_PIPELINE_PKL_PATH = 'pickled_objects/cluster_pipeline_{}.pkl'
 REG_PIPELINE_PKL_PATH = 'pickled_objects/regressor_{}.pkl'
@@ -74,7 +75,7 @@ class ModelPipeline():
         print('Training R2: {:.2f}'.format(reg.score(X, y)))
         print('Time taken: {:.2f}s'.format(time.time()-start))
 
-    def inference(self, scoring=True):
+    def inference(self, scoring=True) -> np.array:
         """
         Performs inference on a dataframe.
 
@@ -108,7 +109,7 @@ class ModelPipeline():
         return reg.predict(X)
 
 
-    def prepare_data(self, scoring):
+    def prepare_data(self, scoring: bool):
         """
         Prepares data before pipeline fitting or inference.
 

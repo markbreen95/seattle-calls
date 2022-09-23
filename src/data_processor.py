@@ -1,6 +1,7 @@
 from google.cloud import bigquery
 from google.oauth2 import service_account
 from enum import Enum
+import pandas as pd
 
 class Mode(Enum):
     TRAIN = 'queries/train.sql'
@@ -23,7 +24,7 @@ class DataProcessor():
 
     """
 
-    def __init__(self, credentials_path, project_id):
+    def __init__(self, credentials_path: str, project_id: str):
         """
         Constructs all the necessary attributes for the model pipeline object.
 
@@ -40,7 +41,7 @@ class DataProcessor():
         self.project_id = project_id
         self.client = bigquery.Client(credentials=self.credentials, project=self.project_id)
 
-    def query_db(self, mode: Mode):
+    def query_db(self, mode: Mode) -> pd.DataFrame:
         """
         Performs inference on a dataframe.
 
